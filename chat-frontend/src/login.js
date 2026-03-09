@@ -13,10 +13,14 @@ function Login({ user, setUser }) {
         email,
         password,
       });
-      setUser(res.data.user); // save user info
+      const userWithToken = {
+        ...res.data.user,
+        token: res.data.token
+      };
+      setUser(userWithToken); // save user info
       alert("login successful! token" + res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(userWithToken));
+      
       // Later: Save token to localstorage
     } catch (error) {
       alert("login failed!");

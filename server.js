@@ -15,41 +15,82 @@ const server=http.createServer(app);
 
 const io = new Server(server,{
     cors:{
-        origin:"*", //later restrict this to frontend url
+        origin:"https://your-frontend-link.vercel.app", //later restrict this to frontend url
         methods: ["GET","POST"]
     }
+   
 });
-
+const onlineUsers = new Map();
 
 
 // socket.IO connection
 io.on("connection",async (socket)=>{
+
     
     console.log('user connected',socket.id);
-    try{
-        const oldMessages = await Message.find().sort({ createdAt:1});
-        socket.emit("old-messages",oldMessages);
-    }catch(error){
-        console.log(error);
-    }
+
+
+    // --- NEW: JOIN ROOM LOGIC ---
+    socket.on("join-room", async (roomId) => {
+        socket.join(roomId);
+        console.log(`User ${socket.id} joined room: ${roomId}`);
+        try{
+            const oldMessages = await Message.find({roomId}).sort({ createdAt:1});
+            socket.emit("old-messages",oldMessages);
+        }catch(error){
+            console.log(error);
+        }
+    });
+    socket.on("leave-room", (roomId) => {
+        socket.leave(roomId);
+        console.log(`User ${socket.id} left room: ${roomId}`);
+    });
     //listen for messages 
     socket.on("send-message",async (data)=>{ //smjhna abhi ye sb
         try{
             const newMessage =new Message({
                 sender: data.sender,
-                text: data.text
+                text: data.text,
+                roomId: data.roomId
             });
             await newMessage.save();
-            //broadcast message for everyone except sender 
-            socket.broadcast.emit("receive-message",newMessage);
+           // This sends the message ONLY to the specific roomId
+            socket.to(data.roomId).emit("receive-message",{
+                ...data,
+                id: newMessage._id,
+                createdAt: newMessage.createdAt
+            });
         } catch(error){
             console.log(error);
         }
         
+        
     });
+    socket.on("typing", (roomId) => {
+        socket.to(roomId).emit("user-typing");
+    });
+
+    socket.on("stop-typing", (roomId) => {
+        socket.to(roomId).emit("user-stop-typing");
+    });
+    socket.on("add-user", (userId) => {
+        onlineUsers.set(userId, socket.id);
+        // Announce the updated list of online IDs to EVERYONE
+        io.emit("get-online-users", Array.from(onlineUsers.keys())); 
+    });
+
     socket.on('disconnect',()=>{
         console.log('user disconnected',socket.id)
-    });
+   
+    for (let [userId, socketId] of onlineUsers.entries()) {
+        if (socketId === socket.id) {
+            onlineUsers.delete(userId);
+            break;
+        }
+    }
+    // Announce the updated list to everyone else
+    io.emit("get-online-users", Array.from(onlineUsers.keys()));
+  });
 });
 
 connectDB();

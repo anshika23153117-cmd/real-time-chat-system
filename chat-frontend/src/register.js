@@ -15,9 +15,10 @@ function Register({ setUser }) {
         email,
         password,
       });
-      setUser(res.data.user);
-      alert("Registration successful!");
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const userWithToken = { ...res.data.user, token: res.data.token };
+        setUser(userWithToken);
+        localStorage.setItem("user", JSON.stringify(userWithToken));
+        alert("Registration successful!");
     } catch (error) {
       alert("Registration failed!");
       console.log(error.response?.data || error.message);
