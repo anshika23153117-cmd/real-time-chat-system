@@ -15,7 +15,7 @@ const server=http.createServer(app);
 
 const io = new Server(server,{
     cors:{
-        origin:"https://your-frontend-link.vercel.app", //later restrict this to frontend url
+        origin:"*", //later restrict this to frontend url
         methods: ["GET","POST"]
     }
    
