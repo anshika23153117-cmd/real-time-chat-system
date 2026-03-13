@@ -4,7 +4,7 @@ import Register from "./register";
 import Login from "./login";
 import './index.css';
 // eslint-disable-next-line
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user"))||null);

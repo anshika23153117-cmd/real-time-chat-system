@@ -3,7 +3,7 @@ import axios from "axios";
 import ChatWindow from "./ChatWindow";
 import { io } from "socket.io-client"; // 1. Import Socket.io
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 const socket = io(BACKEND_URL); // 2. Connect to the server
 
 function Chat({ user, onLogout }) {

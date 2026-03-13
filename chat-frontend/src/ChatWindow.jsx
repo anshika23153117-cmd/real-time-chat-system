@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
 // Use an environment variable or a consistent constant for the backend URL
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 const socket = io(BACKEND_URL);
 
 function ChatWindow({ user, selectedUser, onLogout }) {
