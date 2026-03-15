@@ -2,15 +2,17 @@
 
 A full-stack real-time chat application built with the MERN stack and Socket.io.
 
+# Real-Time Chat System
+A full-stack real-time chat application built with the MERN stack and Socket.io.
+
 ## 🚀 Live Demo
-**Main Website:** [Visit Live App] chat-frontend-anshika.vercel.app
+**Main Website:** [Visit Live App](https://chat-frontend-anshika.vercel.app)
 
 ---
 
 ## 🔗 Project Links
-- **Frontend (Vercel):** [chat-frontend-anshika.vercel.app]chat-frontend-anshika.vercel.app
+- **Frontend (Vercel):** [chat-frontend-anshika.vercel.app](https://chat-frontend-anshika.vercel.app)
 - **Backend (Render):** [chat-backend-anshika.onrender.com](https://chat-backend-anshika.onrender.com)
-
 ---
 
 ## 🛠️ Tech Stack
