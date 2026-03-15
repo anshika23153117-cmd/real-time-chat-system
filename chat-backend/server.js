@@ -15,7 +15,7 @@ const server=http.createServer(app);
 
 const io = new Server(server,{
     cors:{
-        origin:"*", //later restrict this to frontend url
+        origin:process.env.FRONTEND_URL || "http://localhost:3000", //later restrict this to frontend url
         methods: ["GET","POST"]
     }
    
@@ -94,7 +94,9 @@ io.on("connection",async (socket)=>{
 });
 
 connectDB();
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000"
+}));
 app.use(express.json());
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users",require("./routes/userRoutes"));
